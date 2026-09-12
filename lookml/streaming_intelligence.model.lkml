@@ -1,13 +1,13 @@
-connection: "dazn_streaming_intel_postgres"
+connection: "streaming_intelligence_postgres"
 
 include: "/views/*.view.lkml"
 
-datagroup: dazn_streaming_default_datagroup {
+datagroup: streaming_intelligence_default_datagroup {
   sql_trigger: SELECT MAX(finished_at) FROM ops.refresh_run WHERE status = 'succeeded' ;;
   max_cache_age: "4 hours"
 }
 
-persist_with: dazn_streaming_default_datagroup
+persist_with: streaming_intelligence_default_datagroup
 
 explore: competition_action_rates {
   label: "League & Match Analytics"

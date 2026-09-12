@@ -101,7 +101,7 @@ state, not missing data).
   ODBC. Three report pages, built and verified against real data.
 - **Semantic layer:** LookML (views + model + explores), hand-written
   against the real schema. **Not run against a live Looker instance** — see
-  the honesty note in `lookml/dazn_streaming.model.lkml` and below.
+  the honesty note in `lookml/streaming_intelligence.model.lkml` and below.
 
 ## What's real vs. what's honestly labeled otherwise
 
@@ -172,7 +172,7 @@ ingestion/            Python scripts: SoccerNet + football-data.org ingestion, d
 lookml/                Semantic model: model + views
 docs/DATA_PROVENANCE.md   What every source_type actually means, and how each source was verified
 CASE_STUDY.md          A real data-quality bug: found, root-caused, fixed, and guarded against recurring
-dazn_streaming_intel.pbix   The live Power BI report
+streaming_intelligence_report.pbix   The live Power BI report
 ```
 
 ## Running it yourself
@@ -186,7 +186,7 @@ dazn_streaming_intel.pbix   The live Power BI report
    `ingestion/load_soccernet_to_postgres.py`, then
    `ingestion/fetch_football_data_fixtures.py`.
 5. Run `ingestion/validate_data_quality.py` and confirm all checks pass.
-6. Open `dazn_streaming_intel.pbix` in Power BI Desktop and point it at your
+6. Open `streaming_intelligence_report.pbix` in Power BI Desktop and point it at your
    own database via an ODBC DSN (see Environment Constraints above for why
    ODBC, not the native connector).
 
