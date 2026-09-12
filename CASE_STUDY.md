@@ -88,11 +88,11 @@ of quietly degrading a downstream rollup.
 
 ## Why this is the centerpiece of this project, not a footnote
 
-Anyone can build a pipeline that works when the input is well-behaved. The
-JD asks for "strong attention to detail and data quality" — this is what
-that actually looks like in practice: not writing code that's correct on
-the happy path, but noticing when a real result (1 row instead of 17) is
-implausible, tracing it to its actual root cause with real queries instead
-of guessing, fixing it at the right layer, and then hardening the system so
-the same class of failure gets caught automatically next time instead of
-relying on someone noticing a suspiciously small chart again.
+Anyone can build a pipeline that works when the input is well-behaved.
+Real attention to detail and data quality looks like this in practice: not
+writing code that's correct on the happy path, but noticing when a real
+result (1 row instead of 17) is implausible, tracing it to its actual root
+cause with real queries instead of guessing, fixing it at the right layer,
+and then hardening the system so the same class of failure gets caught
+automatically next time instead of relying on someone noticing a
+suspiciously small chart again.

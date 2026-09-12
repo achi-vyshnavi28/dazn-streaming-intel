@@ -1,8 +1,17 @@
 # Sports-Streaming Data Operations & Intelligence Platform
 
-A real, working data-operations pipeline for sports-streaming KPIs — built as
-a portfolio project for a Data Operations Analyst role, using real match and
-fixture data, not mocked-up sample rows.
+A real, working data-operations pipeline for sports-streaming KPIs — built
+end-to-end against real match and fixture data, not mocked-up sample rows,
+to show what trustworthy sports-data engineering and BI actually looks like
+in practice, not just in theory.
+
+**What makes this different from a typical portfolio project:** most
+"dashboard" projects stop at a pretty chart built on data nobody checked.
+This one is built on a governed warehouse where every number traces to a
+named source, every metric has exactly one definition reused across SQL,
+Power BI, and LookML, and — most importantly — it survived a real data bug
+that would have quietly shipped a wrong number to a dashboard, caught and
+fixed with actual evidence, not glossed over (see [`CASE_STUDY.md`](CASE_STUDY.md)).
 
 **Every number in this repo traces back to a real, verified source.** Where
 something is synthetic, incomplete, or untested, that is stated explicitly
@@ -105,7 +114,7 @@ state, not missing data).
 | Power BI report | Real: connected live to the warehouse, verified visual-by-visual. |
 | LookML model | Real, schema-accurate SQL/LookML — **not validated against a live Looker instance** (no accessible free tier). Stated plainly, not glossed over. |
 | Synthetic/QoE telemetry (`raw.qoe_observations`, `staging.qoe_video_sample`) | Schema exists and is designed for it (see `sql/01_schema.sql`), but **no data has been loaded into these tables** — proprietary streaming telemetry isn't publicly available, and a licensed research dataset (LIVE Wild Compressed Video Quality Database) that could stand in for it was sourced and access-verified but deprioritized to keep the finished, verified deliverables real rather than partially populated. See `docs/DATA_PROVENANCE.md`. |
-| Multi-agent AI layer (watcher/narrator/Q&A) | **Not built.** It was in the original project concept, but it isn't in this role's JD — SQL, Power BI, LookML, Python, and data-quality rigor are — so effort went into finishing those deliverables for real instead of half-building an AI layer on top. Left here as an explicit, honest scope decision, not an oversight. |
+| Multi-agent AI layer (watcher/narrator/Q&A) | **Not built.** It was part of an earlier, broader concept for this project, but a bolted-on AI demo adds less real signal than a fully finished, verified data/BI stack — so effort went into making the warehouse, ingestion, validation, Power BI, and LookML layers actually solid instead of spreading thin across a sixth, half-working piece. Left here as an explicit, honest scope decision, not an oversight. |
 
 ## One concrete insight this platform surfaced
 
@@ -181,11 +190,22 @@ dazn_streaming_intel.pbix   The live Power BI report
    own database via an ODBC DSN (see Environment Constraints above for why
    ODBC, not the native connector).
 
-## Target role context
+## Why this stands out
 
-Built against a real Data Operations Analyst JD (streaming/OTT industry):
-SQL, hands-on Power BI Desktop, LookML (preferred), basic Python,
-analytical/problem-solving skills, attention to detail and data quality,
-stakeholder communication, and subscription/OTT/playback/streaming domain
-knowledge. Every deliverable in this repo maps directly to one of those
-lines — and nothing was added or left half-finished just to look busier.
+Three things separate this from a typical self-taught data project:
+
+1. **The data is real, and that was the hard part.** Real match-event
+   annotations, real fixtures from a live API, real technical obstacles
+   (locked-down Windows environment, TLS interception, ODBC vs. native
+   connector behavior) — all solved for real, not assumed away by working
+   on a clean sample dataset.
+2. **One governed definition per metric, enforced everywhere.** "Average
+   goals per match" is defined once, in `ops.metric_definition`, and SQL,
+   Power BI, and LookML all reuse it. No tool is allowed to quietly compute
+   its own slightly-different version of the same number.
+3. **A real bug got caught before it shipped, and the system got harder
+   to fool next time.** Most projects show the happy path. This one shows
+   what happens when an assumption about an external data source turns out
+   to be wrong — how it was noticed, root-caused with real queries, fixed
+   at the right layer, and turned into a permanent automated check instead
+   of a one-time patch. See `CASE_STUDY.md` for the full writeup.
