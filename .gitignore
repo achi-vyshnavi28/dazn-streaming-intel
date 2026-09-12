@@ -1,0 +1,22 @@
+# Secrets -- never commit real credentials.
+.env
+
+# Python virtual environment.
+venv/
+__pycache__/
+*.pyc
+
+# Raw downloaded dataset dumps -- large, and reproducible by re-running the
+# ingestion scripts in ingestion/. Not the kind of thing a warehouse repo
+# should carry as binary blobs.
+soccernet_data/
+
+# Power BI transient lock/cache files (the .pbix itself IS committed --
+# see README for why: it's a primary, verified deliverable, not a build
+# artifact).
+*.pbix.lock
+~$*.pbix
+
+# OS noise.
+.DS_Store
+Thumbs.db
