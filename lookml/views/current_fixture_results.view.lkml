@@ -1,8 +1,4 @@
 view: current_fixture_results {
-  # Maps to analytics.current_fixture_results -- the current_delayed layer
-  # (football-data.org free tier). Real fixtures/results, explicitly NOT
-  # live scores -- football-data.org's free tier delays data, and this
-  # project never labels it "live" anywhere, including here.
   sql_table_name: analytics.current_fixture_results ;;
 
   dimension: match_id {

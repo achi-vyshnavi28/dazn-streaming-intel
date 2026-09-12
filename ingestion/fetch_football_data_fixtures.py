@@ -1,26 +1,3 @@
-"""
-Pulls real fixtures/results from football-data.org's free tier and loads
-them straight into Postgres as the 'current_delayed' layer.
-
-Real, but NOT live -- football-data.org's free tier delays scores/schedules.
-This project never calls this data "live" anywhere; source_type is always
-'current_delayed'. See docs/DATA_PROVENANCE.md.
-
-stdlib only for the HTTP call (urllib). Database driver is pg8000, not
-psycopg2 -- psycopg2-binary's compiled DLL gets blocked by this machine's
-Windows Application Control policy (same issue we hit with numpy). pg8000
-is pure Python, nothing compiled for WDAC to block.
-
-Prerequisites:
-  1. sql/01_schema.sql already run in Supabase.
-  2. .env has DB_USER/DB_PASS/DB_HOST/DB_PORT/DB_NAME (same as the
-     SoccerNet loader) PLUS:
-       FOOTBALL_DATA_API_TOKEN=your_real_token
-
-Usage:
-    pip install pg8000 python-dotenv
-    python ingestion\\fetch_football_data_fixtures.py
-"""
 import json
 import os
 import ssl
@@ -43,8 +20,6 @@ API_TOKEN = os.environ["FOOTBALL_DATA_API_TOKEN"]
 FEED_ID = "football_data_org"
 API_BASE = "https://api.football-data.org/v4"
 
-# football-data.org's free tier covers these 12 real competitions.
-# See docs/DATA_PROVENANCE.md for the source_type = current_delayed rationale.
 FREE_COMPETITIONS = [
     "PL", "PD", "BL1", "SA", "FL1", "CL", "ELC", "DED", "PPL", "EC", "WC", "BSA",
 ]
@@ -65,10 +40,6 @@ def api_get(path, params=None):
 
 
 def get_connection():
-    # Same TLS-interception issue as the SoccerNet loader -- see the
-    # matching comment there and docs/DATA_PROVENANCE.md /
-    # README "Known Environment Constraints" for why verification is
-    # disabled for this connection specifically.
     ssl_context = ssl.create_default_context()
     ssl_context.check_hostname = False
     ssl_context.verify_mode = ssl.CERT_NONE
@@ -133,10 +104,6 @@ def finish_run(conn, run_id, rows_ingested, status, error_message=None):
 
 
 def fetch_and_load(conn):
-    # football-data.org's free tier caps /matches queries at a 10-day
-    # window (confirmed against a real HTTP 400 -- "Specified period must
-    # not exceed 10 days"). Bias toward the past so we get real completed
-    # results, not just unplayed future fixtures: 7 days back, 3 forward.
     date_from = (datetime.now(timezone.utc) - timedelta(days=7)).strftime("%Y-%m-%d")
     date_to = (datetime.now(timezone.utc) + timedelta(days=3)).strftime("%Y-%m-%d")
 

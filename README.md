@@ -53,6 +53,31 @@ flowchart LR
     DQ -.writes findings to.-> OPS
 ```
 
+## The Power BI report
+
+Three pages, all built against the live warehouse. Screenshots below (the
+`.pbix` file itself is also in this repo if you want to open it in Power BI
+Desktop directly).
+
+**League & Match Analytics** — governed goals/cards averages by competition,
+correctly using an *average* aggregation across competition/season rows
+(catching and fixing a Sum-vs-Average bug during development is documented
+in the Environment Constraints section below).
+
+![League & Match Analytics](screenshots/page1_league_match_analytics.png)
+
+**Current Fixtures** — real, current/delayed fixture data from
+football-data.org, explicitly never labeled "live."
+
+![Current Fixtures](screenshots/page2_current_fixtures.png)
+
+**Data Trust & Governance** — the evidence behind this project's
+data-quality claims: real validation-check results, the source-feed
+registry, and an open-incident count (currently 0 — the correct healthy
+state, not missing data).
+
+![Data Trust & Governance](screenshots/page3_data_trust_governance.png)
+
 ## Tech stack
 
 - **Warehouse:** Postgres, hosted on Supabase (free tier), in a layered

@@ -1,8 +1,4 @@
 view: validation_check {
-  # Maps to ops.validation_check -- real, structured data-quality check
-  # results (see ingestion/validate_data_quality.py). This is what backs
-  # the "attention to detail and data quality" line in the JD with actual
-  # evidence, in both Power BI and here, not a claim in a README.
   sql_table_name: ops.validation_check ;;
 
   dimension: check_id {
@@ -60,10 +56,6 @@ view: validation_check {
 }
 
 view: incident {
-  # Maps to ops.incident -- opened automatically by
-  # ingestion/validate_data_quality.py whenever a check goes above PASS.
-  # Empty (0 rows) as of the last real run -- that's the correct healthy
-  # state, not missing data.
   sql_table_name: ops.incident ;;
 
   dimension: incident_id {
@@ -105,9 +97,6 @@ view: incident {
 }
 
 view: source_feed_registry {
-  # Maps to ops.source_feed_registry -- the provenance backbone. Every
-  # feed_id referenced anywhere in staging/analytics traces back to exactly
-  # one row here, matching docs/DATA_PROVENANCE.md.
   sql_table_name: ops.source_feed_registry ;;
 
   dimension: feed_id {

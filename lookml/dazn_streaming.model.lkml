@@ -1,26 +1,8 @@
-# DAZN Sports-Streaming Data Ops & Intelligence Platform -- LookML model
-#
-# HONESTY NOTE (read this before anything else): this model was written
-# against the real, live Supabase Postgres schema (same one the Power BI
-# report and the Python agent tooling connect to) and every dimension/
-# measure name matches real columns in sql/01_schema.sql through
-# sql/03_analytical_views.sql exactly. It has NOT been run against a live
-# Looker instance -- Looker has no meaningful free tier, and getting one
-# was outside this project's reach. This is real, syntactically correct
-# LookML mapped to a real schema, not a validated, deployed model. Said
-# plainly in the README too. The JD lists LookML as "preferred," and Power
-# BI (built and verified live) is the primary, tested BI deliverable.
-
-connection: "dazn_streaming_intel_postgres"  # Supabase Postgres, session pooler.
-# host: aws-0-ap-northeast-1.pooler.supabase.com, port 5432, database: postgres
-# Real connection details live in .env, not committed to this repo.
+connection: "dazn_streaming_intel_postgres"
 
 include: "/views/*.view.lkml"
 
 datagroup: dazn_streaming_default_datagroup {
-  # Ingestion here is on-demand (manual script runs), not a fixed schedule
-  # -- see ingestion/*.py. sql_trigger checks the most recent successful
-  # refresh_run rather than assuming a cron cadence that doesn't exist yet.
   sql_trigger: SELECT MAX(finished_at) FROM ops.refresh_run WHERE status = 'succeeded' ;;
   max_cache_age: "4 hours"
 }
@@ -48,7 +30,7 @@ explore: validation_check {
 
   join: incident {
     type: left_outer
-    sql_on: 1 = 1 ;;  # incident and validation_check share no direct key; both roll up to the same pipeline runs independently.
+    sql_on: 1 = 1 ;;
     relationship: many_to_many
   }
 }

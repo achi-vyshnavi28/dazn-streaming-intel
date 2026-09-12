@@ -1,10 +1,4 @@
 view: competition_action_rates {
-  # Maps directly to analytics.competition_action_rates in the Supabase
-  # Postgres warehouse -- a governed, pre-aggregated view, not a raw table.
-  # Definitions here intentionally mirror sql/03_analytical_views.sql and
-  # ops.metric_definition exactly, so this LookML model, the Power BI
-  # report, and the Q&A agent's run_sql tool never disagree about what
-  # "avg goals per match" means.
   sql_table_name: analytics.competition_action_rates ;;
 
   dimension: competition {

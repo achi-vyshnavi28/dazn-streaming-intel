@@ -1,9 +1,4 @@
 view: match_action_event_counts {
-  # Maps to analytics.match_action_event_counts -- one real row per SoccerNet
-  # match (historical_broadcast only; football-data.org fixtures have no
-  # play-by-play, so they never appear here -- see current_fixture_results
-  # for those). This is the match-grain fact view; competition_action_rates
-  # is the pre-aggregated competition/season-grain rollup of this same data.
   sql_table_name: analytics.match_action_event_counts ;;
 
   dimension: match_id {

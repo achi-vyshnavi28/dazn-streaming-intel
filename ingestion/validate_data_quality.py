@@ -1,22 +1,3 @@
-"""
-Real data-quality validation over the staging layer -- not a demo, actual
-checks with actual thresholds, writing structured PASS/WARNING/CRITICAL
-rows into ops.validation_check and opening real ops.incident rows when
-something is genuinely wrong. This is the trust layer the rest of this
-project (BI, LookML, the agent) is allowed to assume holds.
-
-Uses pg8000, same as the ingestion scripts -- see those for why (WDAC
-blocks psycopg2-binary's compiled DLL on this machine) -- and disables TLS
-cert verification for the same documented reason (this network's TLS
-interception isn't trusted even by Windows itself). See
-docs/DATA_PROVENANCE.md / README "Known Environment Constraints".
-
-Run this AFTER sql/02_staging_transform.sql, every time staging is
-refreshed.
-
-Usage:
-    python ingestion\\validate_data_quality.py
-"""
 import os
 import ssl
 from datetime import datetime, timezone
@@ -32,8 +13,6 @@ DB_HOST = os.environ["DB_HOST"]
 DB_PORT = os.environ["DB_PORT"]
 DB_NAME = os.environ["DB_NAME"]
 
-# The 17 real SoccerNet action-spotting classes. Used to catch label-schema
-# drift or a parsing bug -- not to filter or clean data.
 KNOWN_ACTION_CLASSES = {
     "Ball out of play", "Throw-in", "Foul", "Indirect free-kick",
     "Clearance", "Shots on target", "Shots off target", "Corner",
@@ -105,10 +84,6 @@ def open_incident(conn, source, dataset, category, issue, severity,
 
 
 def check_row_count_sanity(conn):
-    """raw -> staging row-count drop should be small. Some drop is expected
-    (the staging transform defensively skips malformed game_time_raw values
-    rather than crash) -- but a large drop means something's actually
-    broken, not just a handful of dirty rows."""
     raw_events = fetch_one(conn, "select count(*) from raw.soccernet_action_events")[0]
     staging_events = fetch_one(conn, "select count(*) from staging.action_event")[0]
     drop_pct = round(100 * (raw_events - staging_events) / raw_events, 2) if raw_events else 0
@@ -132,14 +107,6 @@ def check_row_count_sanity(conn):
 
 
 def check_match_field_completeness(conn):
-    """Covers every dimension a downstream rollup groups or joins by.
-    competition/season are included deliberately: a real bug (SoccerNet's
-    actual Labels-v2.json has no top-level competition/season keys, so the
-    ingestion script's data.get("competition") silently returned None for
-    every row) collapsed analytics.competition_action_rates from 17 real
-    rows down to 1 before this check existed to catch it. It's here now so
-    the next silent-null bug doesn't require a human eyeballing a
-    suspiciously low row count to notice."""
     total = fetch_one(conn, "select count(*) from staging.match")[0]
     nulls = fetch_one(conn, """
         select count(*) from staging.match
